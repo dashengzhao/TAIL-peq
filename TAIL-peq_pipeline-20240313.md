@@ -1,8 +1,6 @@
----
 
 **Sequencing data analyses pipeline of TAIL-peq genotyping method**
 
----
 
 # 1.  Data demultiplexing
 
