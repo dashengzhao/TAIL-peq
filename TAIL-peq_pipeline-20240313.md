@@ -566,7 +566,8 @@ gatk --java-options "-Xmx6G" HaplotypeCaller --minimum-mapping-quality 30  --max
 gatk GenotypeGVCFs --call-genotypes true -R reference_genome.fa -V Sample01.gvcf -O Sample01.vcf
 gatk SelectVariants -R reference_genome.fa --select-type-to-include SNP -V Sample01.vcf -O Sample01-snp.vcf
 gatk VariantFiltration -R reference_genome.fa  -V Sample01-snp.vcf --filter-expression "QD < 2.0 || MQ < 40.0 || MQRankSum < -12.5 || ReadPosRankSum < -8.0" --filter-name "Filter" -O ./Sample01-snp.vcf.filtering
-less Sample01-snp.vcf.filtering |grep -v "Filter" > Sample01-snp.vcf.filtered
+vcftools --vcf Sample01-snp.vcf.filtering --keep-filtered PASS  --recode --recode-INFO-all --out Sample01-snp.vcf.filtered
+
 ```
 
 ### 8.1.2 To get all SNPs based on specific genomic coordinates
@@ -631,8 +632,7 @@ gatk SelectVariants -R reference_genome.fa -select-type-to-include SNP -V Sample
 ```shell
 # The filtering parameters for SNPs could be adjusted according to your specific research. Here is an example:
 gatk VariantFiltration -R reference_genome.fa -V ./Sample01-100-CombineGVCFs.vcf.snp --filter-expression "QD < 2.0 || MQ < 40.0 || FS > 60.0 || SOR > 3.0 || MQRankSum < -12.5 || ReadPosRankSum < -8.0" --filter-name "Filter" -O ./Sample01-100-CombineGVCFs.vcf.snp.filtering
-less Sample01-100-CombineGVCFs.vcf.snp.filtering |grep -v "Filter" > Sample01-100-CombineGVCFs.vcf.snp.filtered
-vcftools --vcf Sample01-100-CombineGVCFs.vcf.snp.filtered --max-missing 0.8 --minQ 30 --remove-indels --min-alleles 2 --max-alleles 2 --maf 0.05 --recode --recode-INFO-all --out Sample01-100-HighQuality-snp.vcf
+vcftools --vcf Sample01-100-CombineGVCFs.vcf.snp.filtering --keep-filtered PASS  --max-missing 0.8 --minQ 30 --remove-indels --min-alleles 2 --max-alleles 2 --maf 0.05 --recode --recode-INFO-all --out Sample01-100-HighQuality-snp.vcf
 ```
 
 After getting the VCF file including the high-quality SNPs, you can perform the subsequent population genetics analyses, such as PCA, Phylogenetic tree construction, Population admixture inference, LD decay analysis, GWAS, etc.
